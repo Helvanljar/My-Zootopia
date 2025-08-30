@@ -5,19 +5,38 @@ def load_data(file_path):
     with open(file_path, "r") as handle:
         return json.load(handle)
 
-def print_animals(data):
-    """Iterates through animals and prints selected fields."""
+def generate_animals_string(data):
+    """Generates a string with animals' info."""
+    output = ""
     for animal in data:
         if "name" in animal:
-            print(f"Name: {animal['name']}")
+            output += f"Name: {animal['name']}\n"
         if "diet" in animal:
-            print(f"Diet: {animal['diet']}")
+            output += f"Diet: {animal['diet']}\n"
         if "locations" in animal and len(animal["locations"]) > 0:
-            print(f"Location: {animal['locations'][0]}")
+            output += f"Location: {animal['locations'][0]}\n"
         if "type" in animal:
-            print(f"Type: {animal['type']}")
-        print()  # blank line between animals
+            output += f"Type: {animal['type']}\n"
+        output += "\n"  # blank line between animals
+    return output
+
+def main():
+    # Step 1: Load data
+    animals_data = load_data("animals_data.json")
+
+    # Step 2: Generate animals info string
+    animals_string = generate_animals_string(animals_data)
+
+    # Step 3: Read template
+    with open("animals_template.html", "r") as f:
+        template = f.read()
+
+    # Step 4: Replace placeholder
+    new_html = template.replace("__REPLACE_ANIMALS_INFO__", animals_string)
+
+    # Step 5: Write new HTML file
+    with open("animals.html", "w") as f:
+        f.write(new_html)
 
 if __name__ == "__main__":
-    animals_data = load_data("animals_data.json")
-    print_animals(animals_data)
+    main()
